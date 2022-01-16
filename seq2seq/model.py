@@ -30,7 +30,7 @@ class Model(nn.Module):
                  decoder_hidden_size: int, num_cnn_channels: int, cnn_kernel_size: int,
                  cnn_dropout_p: float, cnn_hidden_num_channels: int, input_padding_idx: int, target_pad_idx: int,
                  target_eos_idx: int, output_directory: str, conditional_attention: bool, auxiliary_task: bool,
-                 simple_situation_representation: bool, attention_type: str, **kwargs):
+                 simple_situation_representation: bool, attention_type: str, encoder_type: str, conv_encoder_type:str, **kwargs):
         super(Model, self).__init__()
 
         self.simple_situation_representation = simple_situation_representation
@@ -45,7 +45,7 @@ class Model(nn.Module):
             cnn_input_channels = num_cnn_channels
         # Input: [batch_size, image_width, image_width, num_channels]
         # Output: [batch_size, image_width * image_width, num_conv_channels * 3]
-        if kwargs["conv_encoder"]:
+        if conv_encoder_type == "original":
             self.situation_encoder = ConvolutionalNet(num_channels=cnn_input_channels,
                                                   cnn_kernel_size=cnn_kernel_size,
                                                   num_conv_channels=cnn_hidden_num_channels,
@@ -64,7 +64,7 @@ class Model(nn.Module):
 
         # Input: [batch_size, max_input_length]
         # Output: [batch_size, hidden_size], [batch_size, max_input_length, hidden_size]
-        if kwargs["encoder"] == "bilstm":
+        if encoder_type == "bilstm":
             self.encoder = EncoderRNN(input_size=input_vocabulary_size,
                                     embedding_dim=embedding_dimension,
                                     rnn_input_size=embedding_dimension,

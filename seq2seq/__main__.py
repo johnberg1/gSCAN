@@ -150,6 +150,8 @@ def main(flags):
                           input_padding_idx=test_set.input_vocabulary.pad_idx,
                           target_pad_idx=test_set.target_vocabulary.pad_idx,
                           target_eos_idx=test_set.target_vocabulary.eos_idx,
+                          encoder_type=flags["encoder"],
+                          conv_encoder_type=flags["conv_encoder_type"],
                           **flags)
             model = model.cuda() if use_cuda else model
 

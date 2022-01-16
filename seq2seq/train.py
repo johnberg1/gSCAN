@@ -60,7 +60,9 @@ def train(data_path: str, data_directory: str, generate_vocabularies: bool, inpu
                   num_cnn_channels=training_set.image_channels,
                   input_padding_idx=training_set.input_vocabulary.pad_idx,
                   target_pad_idx=training_set.target_vocabulary.pad_idx,
-                  target_eos_idx=training_set.target_vocabulary.eos_idx,
+                  target_eos_idx=training_set.target_vocabulary.eos_idx,                          
+                  encoder_type=kwargs["encoder"],
+                  conv_encoder_type=kwargs["conv_encoder_type"],
                   **cfg)
     model = model.cuda() if use_cuda else model
     log_parameters(model)

@@ -57,7 +57,7 @@ def predict_and_save(dataset: GroundedScanDataset, model: nn.Module, output_file
 
 
 def predict(data_iterator: Iterator, model: nn.Module, max_decoding_steps: int, pad_idx: int, sos_idx: int,
-            eos_idx: int, max_examples_to_evaluate=None) -> torch.Tensor:
+            eos_idx: int, max_examples_to_evaluate=None, grounding="grid") -> torch.Tensor:
     """
     Loop over all data in data_iterator and predict until <EOS> token is reached.
     :param data_iterator: iterator containing the data to predict
@@ -80,12 +80,13 @@ def predict(data_iterator: Iterator, model: nn.Module, max_decoding_steps: int, 
         if max_examples_to_evaluate:
             if i > max_examples_to_evaluate:
                 break
-        # Encode the input sequence.            
-        situation = situation.transpose(1,3)
-        situation = situation / 255
-        normalize = Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-        situation = normalize(situation)
-        situation = situation.transpose(1,3)
+        # Encode the input sequence.           
+        if grounding == "2d":
+            situation = situation.transpose(1,3)
+            situation = situation / 255
+            normalize = Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+            situation = normalize(situation)
+            situation = situation.transpose(1,3)
         encoded_input = model.encode_input(commands_input=input_sequence,
                                            commands_lengths=input_lengths,
                                            situations_input=situation)

@@ -6,6 +6,7 @@ import torch
 from seq2seq.gSCAN_dataset import GroundedScanDataset
 from seq2seq.model import Model
 from seq2seq.train import train
+from seq2seq.train_2d import train as train_2d
 from seq2seq.predict import predict_and_save
 
 FORMAT = "%(asctime)-15s %(message)s"
@@ -90,6 +91,7 @@ parser.add_argument("--encoder_unidirectional", dest="encoder_bidirectional", de
 # Decoder arguments
 parser.add_argument("--encoder", type=str, choices=['bilstm', 'transformer'])
 parser.add_argument("--conv_encoder", type=str, choices=['original', 'residual'])
+parser.add_argument("--grounding", type=str, choices=['grid', '2d'])
 parser.add_argument("--num_decoder_layers", type=int, default=1)
 parser.add_argument("--attention_type", type=str, default='bahdanau', choices=['bahdanau', 'luong'],
                     help="Luong not properly implemented.")
@@ -123,7 +125,10 @@ def main(flags):
 
     data_path = os.path.join(flags["data_directory"], "dataset.txt")
     if flags["mode"] == "train":
-        train(data_path=data_path, **flags)
+        if flags["grounding"] == "grid":
+            train(data_path=data_path, **flags)
+        else:
+            train_2d(data_path=data_path, **flags)
     elif flags["mode"] == "test":
         assert os.path.exists(os.path.join(flags["data_directory"], flags["input_vocab_path"])) and os.path.exists(
             os.path.join(flags["data_directory"], flags["target_vocab_path"])), \

@@ -81,11 +81,11 @@ def predict(data_iterator: Iterator, model: nn.Module, max_decoding_steps: int, 
             if i > max_examples_to_evaluate:
                 break
         # Encode the input sequence.            
-        # situation = situation.transpose(1,3)
-        # situation = situation / 255
-        # normalize = Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-        # situation = normalize(situation)
-        # situation = situation.transpose(1,3)
+        situation = situation.transpose(1,3)
+        situation = situation / 255
+        normalize = Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        situation = normalize(situation)
+        situation = situation.transpose(1,3)
         encoded_input = model.encode_input(commands_input=input_sequence,
                                            commands_lengths=input_lengths,
                                            situations_input=situation)
